@@ -24,7 +24,7 @@ export default function LoginPage() {
 
     try {
       await userApi.login({ email, password });
-      router.push('/');
+      router.push('/dashboard');
     } catch (e) {
       if (e instanceof ApiClientError) {
         setError(e.payload?.details || e.message);
