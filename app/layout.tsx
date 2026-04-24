@@ -6,12 +6,9 @@ import { LanguageProvider } from './components/language';
 
 export const metadata: Metadata = {
   title: 'DiaBuddy',
-  description: 'Diabetes care companion',
-  icons: {
-    icon: '/brand-icon-v2.svg?v=20260422c',
-    shortcut: '/brand-icon-v2.svg?v=20260422c',
-    apple: '/brand-icon-v2.svg?v=20260422c'
-  }
+  description: 'Diabetes care companion'
+  // Icons + apple-touch are served via the Next.js App Router file-based convention
+  // (app/icon.svg, app/apple-icon.png). The PWA manifest is at app/manifest.webmanifest.
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

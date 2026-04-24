@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="512" height="512" role="img">
+  <title>DiaBuddy</title>
+  <desc>Sensor AI Smile — CGM ring, AI node arc, buddy face. DiaBuddy diabetes companion app.</desc>
+  
+  <circle cx="50" cy="50" r="38" fill="none" stroke="#17C0BC" stroke-width="9"/>
+  <path d="M 26,58 Q 50,30 74,58" fill="none" stroke="#FFFFFF" stroke-width="7" stroke-linecap="butt"/>
+  <circle cx="26" cy="58" r="6" fill="#E8603A"/>
+  <circle cx="74" cy="58" r="6" fill="#E8603A"/>
+</svg>
