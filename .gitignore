@@ -1,0 +1,34 @@
+# Next.js
+.next/
+out/
+.vercel/
+
+# Dependencies
+node_modules/
+
+# Test / build artifacts
+coverage/
+playwright-report/
+test-results/
+.turbo/
+
+# Env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# System / editor
+.DS_Store
+*.log
+.idea
+.vscode
+.qodo
+
+# Override user-global `.scripts/*` so the committed local-CI helper is versioned with this repo.
+!.scripts/
+!.scripts/*
+
+# TypeScript incremental build info
+tsconfig.tsbuildinfo
+*.tsbuildinfo
