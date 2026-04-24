@@ -24,7 +24,7 @@ test('logs in through api route and lands on dashboard', async ({ page }) => {
   await page.getByRole('button', { name: 'Continue' }).click();
 
   await expect(page).toHaveURL(/\/dashboard$/);
-  await expect(page.getByRole('heading', { name: 'User Operations Dashboard' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Diabetes Decision Cockpit' })).toBeVisible();
 });
 
 test('logs out and returns to login', async ({ context, page }) => {
@@ -58,7 +58,8 @@ test('logs out and returns to login', async ({ context, page }) => {
   });
 
   await page.goto('/dashboard');
-  await page.getByRole('button', { name: 'Sign Out' }).click();
+  await page.getByRole('button', { name: 'User menu' }).click();
+  await page.getByRole('button', { name: 'Sign out' }).click();
 
   await expect(page).toHaveURL(/\/login$/);
   await expect(page.getByRole('heading', { name: 'Sign In' })).toBeVisible();

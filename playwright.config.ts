@@ -2,12 +2,16 @@ import { defineConfig, devices } from '@playwright/test';
 
 export default defineConfig({
   testDir: './e2e',
-  timeout: 30_000,
+  // 60s / 15s — Next.js dev cold-start takes 5-10s for first route compile
+  // on a GitHub Actions runner; the old 30s/5s budget was under that floor.
+  timeout: 60_000,
   expect: {
-    timeout: 5_000
+    timeout: 15_000
   },
   fullyParallel: true,
-  retries: 0,
+  // One retry absorbs the occasional dev-server compile stall; CI is again
+  // blocking (continue-on-error removed from the workflow).
+  retries: 1,
   reporter: 'list',
   use: {
     baseURL: 'http://127.0.0.1:3001',
