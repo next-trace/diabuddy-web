@@ -1,32 +1,38 @@
+# Stage 1: Build
 FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-RUN corepack enable && corepack prepare pnpm@10.33.0 --activate
+# git is needed because a dependency is resolved from github:next-trace/diabuddy-design-system
+RUN apk add --no-cache git \
+  && corepack enable \
+  && corepack prepare pnpm@10.33.0 --activate
 
-COPY pnpm-workspace.yaml package.json pnpm-lock.yaml tsconfig.base.json ./
-COPY apps/web/package.json ./apps/web/package.json
-COPY packages/api-client/package.json ./packages/api-client/package.json
-COPY packages/ui/package.json ./packages/ui/package.json
-
+COPY package.json pnpm-lock.yaml ./
 RUN pnpm install --frozen-lockfile
 
 COPY . .
+RUN pnpm build
 
-RUN pnpm --filter @diabuddy/web build
-
+# Stage 2: Runtime (Next.js standalone output)
 FROM node:20-alpine AS runner
 
 WORKDIR /srv
-ENV NODE_ENV=production
+ENV NODE_ENV=production \
+    PORT=3000 \
+    HOSTNAME=0.0.0.0
 
 RUN addgroup -S nodejs && adduser -S nextjs -G nodejs
-USER nextjs
 
-COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/static ./apps/web/.next/static
-COPY --from=builder --chown=nextjs:nodejs /app/apps/web/public ./apps/web/public
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/public ./public
+
+USER nextjs
 
 EXPOSE 3000
 
-CMD ["node", "apps/web/server.js"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=15s --retries=5 \
+  CMD wget -qO- http://127.0.0.1:3000/ >/dev/null 2>&1 || exit 1
+
+CMD ["node", "server.js"]
