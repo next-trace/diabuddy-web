@@ -61,6 +61,7 @@ test('refreshes expired access token and retries protected read', async ({ conte
   ]);
 
   await page.goto('/dashboard');
+  await page.getByRole('button', { name: 'User Ops' }).click();
   await page.getByLabel('User ID').fill(userID);
   await page.getByRole('button', { name: 'Get by ID' }).click();
 
@@ -169,6 +170,7 @@ test('authenticated dashboard can create/get/update/hard-delete user', async ({ 
   });
 
   await page.goto('/dashboard');
+  await page.getByRole('button', { name: 'User Ops' }).click();
 
   await page.getByLabel('Email').first().fill(createdEmail);
   await page.getByRole('button', { name: 'Create' }).click();
