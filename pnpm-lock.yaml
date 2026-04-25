@@ -8,9 +8,9 @@ importers:
 
   .:
     dependencies:
-      '@next-trace/diabuddy-design-system':
-        specifier: github:next-trace/diabuddy-design-system#v0.1.2
-        version: https://codeload.github.com/next-trace/diabuddy-design-system/tar.gz/7615547cbcaa3782d2d04bdab37f68e2e9432c40(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@next-trace/nexdoz-design-system':
+        specifier: file:../nexdoz-design-system
+        version: file:../nexdoz-design-system(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       next:
         specifier: ^15.4.6
         version: 15.5.15(@playwright/test@1.59.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -195,9 +195,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@next-trace/diabuddy-design-system@https://codeload.github.com/next-trace/diabuddy-design-system/tar.gz/7615547cbcaa3782d2d04bdab37f68e2e9432c40':
-    resolution: {tarball: https://codeload.github.com/next-trace/diabuddy-design-system/tar.gz/7615547cbcaa3782d2d04bdab37f68e2e9432c40}
-    version: 0.1.2
+  '@next-trace/nexdoz-design-system@file:../nexdoz-design-system':
+    resolution: {directory: ../nexdoz-design-system, type: directory}
     engines: {node: '>=18'}
     peerDependencies:
       react: '>=18.2 <20'
@@ -504,7 +503,7 @@ snapshots:
   '@img/sharp-win32-x64@0.34.5':
     optional: true
 
-  '@next-trace/diabuddy-design-system@https://codeload.github.com/next-trace/diabuddy-design-system/tar.gz/7615547cbcaa3782d2d04bdab37f68e2e9432c40(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@next-trace/nexdoz-design-system@file:../nexdoz-design-system(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       react: 18.3.1
     optionalDependencies:

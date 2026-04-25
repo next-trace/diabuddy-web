@@ -1,30 +1,26 @@
 'use client';
 
 import { useEffect, useRef, useState, type ChangeEvent } from 'react';
-import { Button, Input, Switch } from '@next-trace/diabuddy-design-system/react';
+import { Button, Input, Switch, PageHeader, Card, CardHeader, CardBody } from '@next-trace/nexdoz-design-system/react';
 import { Icon } from '../components/icons';
-
-const AVATAR_STORAGE_KEY = 'diabuddy-avatar-dataurl';
-const AVATAR_EVENT = 'diabuddy-avatar-updated';
-const UI_EFFECTS_STORAGE_KEY = 'diabuddy-ui-effects';
-const UI_EFFECTS_EVENT = 'diabuddy-ui-effects-updated';
+import { StorageKeys, StorageEvents } from '../../lib/storage-keys';
 
 export default function SettingsPage() {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [avatarUrl, setAvatarUrl] = useState('');
-  const [name, setName] = useState('Demo Patient');
+  const [name, setName] = useState('');
   const [birthDate, setBirthDate] = useState('');
   const [phone, setPhone] = useState('');
   const [emergencyContact, setEmergencyContact] = useState('');
   const [uiEffectsEnabled, setUiEffectsEnabled] = useState(true);
 
   useEffect(() => {
-    const savedAvatar = localStorage.getItem(AVATAR_STORAGE_KEY) || '';
-    const savedName = localStorage.getItem('diabuddy-display-name') || 'Demo Patient';
-    const savedBirthDate = localStorage.getItem('diabuddy-birth-date') || '';
-    const savedPhone = localStorage.getItem('diabuddy-phone') || '';
-    const savedEmergencyContact = localStorage.getItem('diabuddy-emergency-contact') || '';
-    const savedUiEffects = localStorage.getItem(UI_EFFECTS_STORAGE_KEY);
+    const savedAvatar = localStorage.getItem(StorageKeys.AVATAR) || '';
+    const savedName = localStorage.getItem(StorageKeys.DISPLAY_NAME) || '';
+    const savedBirthDate = localStorage.getItem(StorageKeys.BIRTH_DATE) || '';
+    const savedPhone = localStorage.getItem(StorageKeys.PHONE) || '';
+    const savedEmergencyContact = localStorage.getItem(StorageKeys.EMERGENCY_CONTACT) || '';
+    const savedUiEffects = localStorage.getItem(StorageKeys.UI_EFFECTS);
     setAvatarUrl(savedAvatar);
     setName(savedName);
     setBirthDate(savedBirthDate);
@@ -36,11 +32,11 @@ export default function SettingsPage() {
   function notifyAvatarChanged(next: string) {
     setAvatarUrl(next);
     if (next) {
-      localStorage.setItem(AVATAR_STORAGE_KEY, next);
+      localStorage.setItem(StorageKeys.AVATAR, next);
     } else {
-      localStorage.removeItem(AVATAR_STORAGE_KEY);
+      localStorage.removeItem(StorageKeys.AVATAR);
     }
-    window.dispatchEvent(new Event(AVATAR_EVENT));
+    window.dispatchEvent(new Event(StorageEvents.AVATAR));
   }
 
   function onAvatarSelected(event: ChangeEvent<HTMLInputElement>) {
@@ -63,43 +59,44 @@ export default function SettingsPage() {
   }
 
   function saveName() {
-    localStorage.setItem('diabuddy-display-name', name.trim() || 'Demo Patient');
-    localStorage.setItem('diabuddy-birth-date', birthDate);
-    localStorage.setItem('diabuddy-phone', phone);
-    localStorage.setItem('diabuddy-emergency-contact', emergencyContact);
-    localStorage.setItem(UI_EFFECTS_STORAGE_KEY, uiEffectsEnabled ? 'on' : 'off');
+    localStorage.setItem(StorageKeys.DISPLAY_NAME, name.trim());
+    localStorage.setItem(StorageKeys.BIRTH_DATE, birthDate);
+    localStorage.setItem(StorageKeys.PHONE, phone);
+    localStorage.setItem(StorageKeys.EMERGENCY_CONTACT, emergencyContact);
+    localStorage.setItem(StorageKeys.UI_EFFECTS, uiEffectsEnabled ? 'on' : 'off');
     document.documentElement.setAttribute('data-ui-effects', uiEffectsEnabled ? 'on' : 'off');
-    window.dispatchEvent(new Event(UI_EFFECTS_EVENT));
-    window.dispatchEvent(new Event(AVATAR_EVENT));
+    window.dispatchEvent(new Event(StorageEvents.UI_EFFECTS));
+    window.dispatchEvent(new Event(StorageEvents.AVATAR));
   }
 
   return (
-    <section className="shell settingsShell">
-      <section className="hero settingsHero">
-        <p className="eyebrow eyebrowWithIcon"><Icon name="settings" /> ACCOUNT SETTINGS</p>
-        <h1>Profile and Preferences</h1>
-        <p className="lead">Manage your profile photo, name, and local experience settings.</p>
-      </section>
+    <section className="shell" data-theme="dbui-light">
+      <PageHeader
+        icon={<Icon name="settings" />}
+        eyebrow={<><Icon name="settings" /> Account Settings</>}
+        title="Profile and Preferences"
+        subtitle="Manage your profile photo, name, and local experience settings."
+      />
 
-      <section className="cards settingsGrid">
-        <article className="card settingsCard">
-          <h3>Profile</h3>
-          <p className="muted">Manage your personal profile details and avatar.</p>
+      <Card>
+        <CardHeader title="Profile" eyebrow="Personal" />
+        <CardBody>
+          <p className="dbui-muted">Manage your personal profile details and avatar.</p>
           <div className="settingsAvatarRow">
             <span className="settingsAvatarPreview" aria-hidden>
-              {avatarUrl ? <img src={avatarUrl} alt="" className="settingsAvatarImage" /> : (name || 'D').slice(0, 1).toUpperCase()}
+              {avatarUrl ? <img src={avatarUrl} alt="" className="settingsAvatarImage" /> : (name || 'N').slice(0, 1).toUpperCase()}
             </span>
             <div className="settingsIdentity">
-              <strong>{name || 'Demo Patient'}</strong>
+              <strong>{name || 'Your name'}</strong>
               <small>Account Profile</small>
             </div>
             <div className="settingsActions">
               <input ref={fileInputRef} type="file" accept="image/*" onChange={onAvatarSelected} />
               <div className="formActions">
-                <Button type="button" variant="secondary" className="linkButton secondary" onClick={() => fileInputRef.current?.click()}>
+                <Button type="button" variant="secondary" size="md" onClick={() => fileInputRef.current?.click()}>
                   Upload Photo
                 </Button>
-                <Button type="button" variant="secondary" className="linkButton secondary" onClick={clearAvatar}>
+                <Button type="button" variant="ghost" size="md" onClick={clearAvatar}>
                   Remove Photo
                 </Button>
               </div>
@@ -144,12 +141,12 @@ export default function SettingsPage() {
             label="Enable UI motion and glow effects"
           />
           <div className="formActions">
-            <Button type="button" className="linkButton" onClick={saveName}>
+            <Button type="button" variant="primary" size="md" onClick={saveName}>
               Save Profile
             </Button>
           </div>
-        </article>
-      </section>
+        </CardBody>
+      </Card>
     </section>
   );
 }

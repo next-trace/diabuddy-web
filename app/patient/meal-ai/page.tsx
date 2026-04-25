@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef, useState } from 'react';
-import { Button, Input, Select, TextArea } from '@next-trace/diabuddy-design-system/react';
+import { Button, Input, Select, TextArea, PageHeader } from '@next-trace/nexdoz-design-system/react';
 import { healthApi } from '../../../lib/health-api';
 import { csrfHeaders } from '../../../lib/csrf';
 import { Icon } from '../../components/icons';
@@ -161,12 +161,13 @@ export default function MealAiPage() {
   }
 
   return (
-    <section className="shell">
-      <section className="hero">
-        <p className="eyebrow eyebrowWithIcon"><Icon name="meal" /> AI MEAL WORKFLOW</p>
-        <h1>Meal Scan + Clarification</h1>
-        <p className="lead">Scan meal/menu, resolve low-confidence guesses, and save structured meal events directly to timeline.</p>
-      </section>
+    <section className="shell" data-theme="dbui-light">
+      <PageHeader
+        icon={<Icon name="meal" />}
+        eyebrow={<><Icon name="meal" /> AI Meal Workflow</>}
+        title="Meal Scan + Clarification"
+        subtitle="Scan meal/menu, resolve low-confidence guesses, and save structured meal events directly to timeline."
+      />
 
       <section className="cards twoCol">
         <article className="card">

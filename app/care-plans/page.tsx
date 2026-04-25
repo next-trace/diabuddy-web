@@ -1,9 +1,10 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Button, Input } from '@next-trace/diabuddy-design-system/react';
+import { Button, Input, PageHeader, Card, CardHeader, CardBody, EmptyState, MetricTile } from '@next-trace/nexdoz-design-system/react';
 import { healthApi, type ActionPlan } from '../../lib/health-api';
 import { Icon } from '../components/icons';
+import { mapErrorToFriendly } from '../../lib/error-map';
 
 export default function CarePlansPage() {
   const [plans, setPlans] = useState<ActionPlan[]>([]);
@@ -23,7 +24,7 @@ export default function CarePlansPage() {
       setOpenCount(view.open_count);
       setDoneCount(view.done_count);
     } catch (e) {
-      setError((e as Error).message);
+      setError(mapErrorToFriendly(e));
     }
   }
 
@@ -40,7 +41,7 @@ export default function CarePlansPage() {
       await load();
       setMessage('Plan added.');
     } catch (e) {
-      setError((e as Error).message);
+      setError(mapErrorToFriendly(e));
     }
   }
 
@@ -52,7 +53,7 @@ export default function CarePlansPage() {
       await load();
       setMessage('Plan updated.');
     } catch (e) {
-      setError((e as Error).message);
+      setError(mapErrorToFriendly(e));
     }
   }
 
@@ -64,7 +65,7 @@ export default function CarePlansPage() {
       await load();
       setMessage('Plan deleted.');
     } catch (e) {
-      setError((e as Error).message);
+      setError(mapErrorToFriendly(e));
     }
   }
 
@@ -73,39 +74,60 @@ export default function CarePlansPage() {
   }, []);
 
   return (
-    <section className="shell">
-      <section className="hero">
-        <p className="eyebrow eyebrowWithIcon"><Icon name="users" /> CARE WORKFLOW</p>
-        <h1>Action Plans</h1>
-        <p className="lead">Track patient-specific action plans and completion status.</p>
-      </section>
+    <section className="shell" data-theme="dbui-light">
+      <PageHeader
+        icon={<Icon name="users" />}
+        eyebrow={<><Icon name="users" /> Care Workflow</>}
+        title="Action Plans"
+        subtitle="Track patient-specific action plans and completion status."
+        actions={<Button variant="ghost" size="md" onClick={load}>Refresh</Button>}
+      />
 
-      <section className="card">
-        <div className="formGrid">
-          <label>Plan title<Input value={title} onChange={(e) => setTitle(e.target.value)} /></label>
-          <label>Due date<Input type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} /></label>
-          <Button className="linkButton compactAction" onClick={addPlan}>Add Plan</Button>
-        </div>
-      </section>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '0.75rem', marginBottom: '1.5rem' }}>
+        <MetricTile label="Open"      value={openCount} />
+        <MetricTile label="Completed" value={doneCount} />
+      </div>
 
-      <section className="card">
-        <p className="muted">Open: {openCount} | Completed: {doneCount}</p>
-        <div className="ctaRow"><Button className="linkButton" onClick={load}>Refresh</Button></div>
-        <div className="stack">
-          {plans.length ? plans.map((p) => (
-            <div className="rowBetween" key={p.id}>
-              <span>{p.title} ({p.due_date})</span>
-              <div className="ctaRow">
-                <Button variant="secondary" className="linkButton secondary tiny" onClick={() => toggle(p.id)}>{p.status === 'open' ? 'Mark Done' : 'Reopen'}</Button>
-                <Button variant="danger" className="linkButton danger tiny" onClick={() => remove(p.id)}>Delete</Button>
-              </div>
+      <Card>
+        <CardHeader title="New Plan" />
+        <CardBody>
+          <div className="formGrid">
+            <label>Plan title<Input value={title} onChange={(e) => setTitle(e.target.value)} /></label>
+            <label>Due date<Input type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} /></label>
+            <Button variant="primary" size="md" onClick={addPlan}>Add Plan</Button>
+          </div>
+        </CardBody>
+      </Card>
+
+      <div style={{ height: '1rem' }} />
+
+      <Card>
+        <CardHeader title="All Plans" />
+        <CardBody>
+          {plans.length ? (
+            <div className="stack">
+              {plans.map((p) => (
+                <div className="rowBetween" key={p.id}>
+                  <span>{p.title} ({p.due_date})</span>
+                  <div className="ctaRow">
+                    <Button variant="secondary" size="sm" onClick={() => toggle(p.id)}>{p.status === 'open' ? 'Mark Done' : 'Reopen'}</Button>
+                    <Button variant="danger"    size="sm" onClick={() => remove(p.id)}>Delete</Button>
+                  </div>
+                </div>
+              ))}
             </div>
-          )) : <p className="muted">No plans yet.</p>}
-        </div>
-      </section>
+          ) : (
+            <EmptyState
+              icon={<Icon name="users" />}
+              title="No plans yet"
+              hint="Add an action plan above to start tracking. Plans help patients turn recommendations into concrete next steps."
+            />
+          )}
+        </CardBody>
+      </Card>
 
-      {message ? <p className="okText">{message}</p> : null}
-      {error ? <p className="errorText">{error}</p> : null}
+      {message ? <p style={{ color: 'var(--dbui-success)', marginTop: '1rem' }}>{message}</p> : null}
+      {error ? <p style={{ color: 'var(--dbui-danger)', marginTop: '1rem' }}>{error}</p> : null}
     </section>
   );
 }

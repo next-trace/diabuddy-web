@@ -1,10 +1,11 @@
 'use client';
 
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
+import { StorageKeys } from '../../lib/storage-keys';
 
 export type Lang = 'en' | 'de';
 
-const STORAGE_KEY = 'diabuddy-lang';
+const STORAGE_KEY = StorageKeys.LANG;
 
 type Dict = Record<string, string>;
 
@@ -12,12 +13,12 @@ const en: Dict = {
   'lang.label': 'Language',
   'lang.en': 'English',
   'lang.de': 'German',
-  'shell.platform': 'DIA BUDDY PLATFORM',
-  'shell.title': 'DiaBuddy Operations Center',
+  'shell.platform': 'NEXDOZ PLATFORM',
+  'shell.title': 'Nexdoz Operations Center',
   'shell.account': 'Account',
   'shell.signed_in_user': 'Signed in user',
   'shell.sign_out': 'Sign out',
-  'shell.about': 'About DiaBuddy',
+  'shell.about': 'About Nexdoz',
   'shell.brand_principles': 'Brand principles',
   'shell.design_strategy': 'Design strategy',
   'nav.home': 'Home',
@@ -33,14 +34,14 @@ const en: Dict = {
   'nav.pricing': 'Pricing',
   'nav.market': 'Market',
   'nav.about': 'About',
-  'home.eyebrow': 'DIA BUDDY',
+  'home.eyebrow': 'NEXDOZ',
   'home.title': 'AI diabetes companion for daily decisions.',
   'home.lead': 'Meal scan, timeline insights, clinician-ready summaries, and secure user operations in one product experience.',
   'home.sign_in': 'Sign In',
   'home.open_dashboard': 'Open Dashboard',
   'home.meal_ai': 'Meal AI',
   'home.mobile_title': 'Get the Mobile App',
-  'home.mobile_body': 'Install DiaBuddy on your phone and sync your diabetes workflow across devices.',
+  'home.mobile_body': 'Install Nexdoz on your phone and sync your diabetes workflow across devices.',
   'home.what_title': 'What You Can Do'
 };
 
@@ -48,12 +49,12 @@ const de: Dict = {
   'lang.label': 'Sprache',
   'lang.en': 'Englisch',
   'lang.de': 'Deutsch',
-  'shell.platform': 'DIA BUDDY PLATTFORM',
-  'shell.title': 'DiaBuddy Leitstand',
+  'shell.platform': 'NEXDOZ PLATTFORM',
+  'shell.title': 'Nexdoz Leitstand',
   'shell.account': 'Konto',
   'shell.signed_in_user': 'Angemeldeter Nutzer',
   'shell.sign_out': 'Abmelden',
-  'shell.about': 'Über DiaBuddy',
+  'shell.about': 'Über Nexdoz',
   'shell.brand_principles': 'Markenprinzipien',
   'shell.design_strategy': 'Designstrategie',
   'nav.home': 'Start',
@@ -69,14 +70,14 @@ const de: Dict = {
   'nav.pricing': 'Preise',
   'nav.market': 'Markt',
   'nav.about': 'Über uns',
-  'home.eyebrow': 'DIA BUDDY',
+  'home.eyebrow': 'NEXDOZ',
   'home.title': 'KI-Diabetesbegleiter für tägliche Entscheidungen.',
   'home.lead': 'Mahlzeit-Scan, Timeline-Einblicke, klinikreife Zusammenfassungen und sichere Nutzerfunktionen in einem Produkt.',
   'home.sign_in': 'Anmelden',
   'home.open_dashboard': 'Dashboard öffnen',
   'home.meal_ai': 'Mahlzeit-KI',
   'home.mobile_title': 'Mobile App holen',
-  'home.mobile_body': 'Installiere DiaBuddy auf deinem Telefon und synchronisiere den Diabetes-Workflow über alle Geräte.',
+  'home.mobile_body': 'Installiere Nexdoz auf deinem Telefon und synchronisiere den Diabetes-Workflow über alle Geräte.',
   'home.what_title': 'Was Du tun kannst'
 };
 

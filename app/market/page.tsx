@@ -1,4 +1,5 @@
 import { Icon } from '../components/icons';
+import { PageHeader, Card, CardHeader, CardBody, Button } from '@next-trace/nexdoz-design-system/react';
 
 const competitors = [
   {
@@ -41,36 +42,39 @@ const competitors = [
 
 export default function MarketPage() {
   return (
-    <section className="shell">
-      <section className="hero">
-        <p className="eyebrow eyebrowWithIcon"><Icon name="market" /> GO-TO-MARKET</p>
-        <h1>Market Intelligence</h1>
-        <p className="lead">
-          Diabetes app competition is real. DiaBuddy differentiation is not generic logging, it is explainable recommendations plus clinician-ready escalation workflow.
-        </p>
-      </section>
+    <section className="shell" data-theme="dbui-light">
+      <PageHeader
+        icon={<Icon name="market" />}
+        eyebrow={<><Icon name="market" /> Go-to-Market</>}
+        title="Market Intelligence"
+        subtitle="Diabetes app competition is real. Nexdoz differentiation is not generic logging — it is explainable recommendations plus clinician-ready escalation workflow."
+      />
 
-      <section className="cards marketGrid">
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1rem', marginBottom: '1.5rem' }}>
         {competitors.map((item) => (
-          <article className="card" key={item.name}>
-            <h3>{item.name}</h3>
-            <p><strong>Monetization:</strong> {item.model}</p>
-            <p className="muted">{item.angle}</p>
-            <a className="linkButton secondary sourceButton" href={item.url} target="_blank" rel="noreferrer">
-              <Icon name="market" /> Source
-            </a>
-          </article>
+          <Card key={item.name}>
+            <CardHeader title={item.name} />
+            <CardBody>
+              <p><strong>Monetization:</strong> {item.model}</p>
+              <p className="dbui-muted">{item.angle}</p>
+              <a href={item.url} target="_blank" rel="noreferrer">
+                <Button variant="ghost" size="sm"><Icon name="market" /> Source</Button>
+              </a>
+            </CardBody>
+          </Card>
         ))}
-      </section>
+      </div>
 
-      <section className="card marketPositioning">
-        <h3>DiaBuddy Positioning</h3>
-        <div className="stack">
-          <p><strong>Primary wedge:</strong> Decision cockpit that closes care loop (track, explain, recommend, follow-up, measure).</p>
-          <p><strong>Commercial motion:</strong> B2C acquisition with free + Plus, B2B expansion with Clinician Pro and Enterprise.</p>
-          <p><strong>Reference date:</strong> competitor scan last updated April 20, 2026.</p>
-        </div>
-      </section>
+      <Card>
+        <CardHeader title="Nexdoz Positioning" />
+        <CardBody>
+          <div className="stack">
+            <p><strong>Primary wedge:</strong> Decision cockpit that closes the care loop (track, explain, recommend, follow-up, measure).</p>
+            <p><strong>Commercial motion:</strong> B2C acquisition with free + Plus, B2B expansion with Clinician Pro and Enterprise.</p>
+            <p><strong>Reference date:</strong> competitor scan last updated April 20, 2026.</p>
+          </div>
+        </CardBody>
+      </Card>
     </section>
   );
 }
