@@ -24,7 +24,7 @@ export default function HomePage() {
     <section className="shell">
       <section className="hero">
         <p className="eyebrow eyebrowWithIcon"><Icon name="dashboard" /> NEXTTRACE OPERATIONS LAYER</p>
-        <h1>DiaBuddy Control Surface</h1>
+        <h1>Nexdoz Control Surface</h1>
         <p className="lead">
           High-trust diabetes operations with clear action paths, live signals, and clinician-ready summaries.
         </p>

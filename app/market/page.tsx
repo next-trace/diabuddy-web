@@ -46,7 +46,7 @@ export default function MarketPage() {
         <p className="eyebrow eyebrowWithIcon"><Icon name="market" /> GO-TO-MARKET</p>
         <h1>Market Intelligence</h1>
         <p className="lead">
-          Diabetes app competition is real. DiaBuddy differentiation is not generic logging, it is explainable recommendations plus clinician-ready escalation workflow.
+          Diabetes app competition is real. Nexdoz differentiation is not generic logging, it is explainable recommendations plus clinician-ready escalation workflow.
         </p>
       </section>
 
@@ -64,7 +64,7 @@ export default function MarketPage() {
       </section>
 
       <section className="card marketPositioning">
-        <h3>DiaBuddy Positioning</h3>
+        <h3>Nexdoz Positioning</h3>
         <div className="stack">
           <p><strong>Primary wedge:</strong> Decision cockpit that closes care loop (track, explain, recommend, follow-up, measure).</p>
           <p><strong>Commercial motion:</strong> B2C acquisition with free + Plus, B2B expansion with Clinician Pro and Enterprise.</p>

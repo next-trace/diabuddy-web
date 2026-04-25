@@ -5,9 +5,9 @@ export default function AboutPage() {
     <section className="shell">
       <section className="hero">
         <p className="eyebrow eyebrowWithIcon"><Icon name="spark" /> ABOUT</p>
-        <h1>DiaBuddy Brand and Design Direction</h1>
+        <h1>Nexdoz Brand and Design Direction</h1>
         <p className="lead">
-          DiaBuddy combines clinical clarity with emotionally calm interaction patterns. The visual system is grounded in
+          Nexdoz combines clinical clarity with emotionally calm interaction patterns. The visual system is grounded in
           deep blue trust tones, turquoise guidance accents, and measured gold highlights.
         </p>
       </section>

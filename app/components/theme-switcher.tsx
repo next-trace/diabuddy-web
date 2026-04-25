@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 
 type ThemeId = 'core' | 'night';
 
-const STORAGE_KEY = 'diabuddy-theme';
+const STORAGE_KEY = 'nexdoz-theme';
 
 export function ThemeSwitcher() {
   const [theme, setTheme] = useState<ThemeId>('core');

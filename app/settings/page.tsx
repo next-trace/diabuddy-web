@@ -1,13 +1,13 @@
 'use client';
 
 import { useEffect, useRef, useState, type ChangeEvent } from 'react';
-import { Button, Input, Switch } from '@next-trace/diabuddy-design-system/react';
+import { Button, Input, Switch } from '@next-trace/nexdoz-design-system/react';
 import { Icon } from '../components/icons';
 
-const AVATAR_STORAGE_KEY = 'diabuddy-avatar-dataurl';
-const AVATAR_EVENT = 'diabuddy-avatar-updated';
-const UI_EFFECTS_STORAGE_KEY = 'diabuddy-ui-effects';
-const UI_EFFECTS_EVENT = 'diabuddy-ui-effects-updated';
+const AVATAR_STORAGE_KEY = 'nexdoz-avatar-dataurl';
+const AVATAR_EVENT = 'nexdoz-avatar-updated';
+const UI_EFFECTS_STORAGE_KEY = 'nexdoz-ui-effects';
+const UI_EFFECTS_EVENT = 'nexdoz-ui-effects-updated';
 
 export default function SettingsPage() {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -20,10 +20,10 @@ export default function SettingsPage() {
 
   useEffect(() => {
     const savedAvatar = localStorage.getItem(AVATAR_STORAGE_KEY) || '';
-    const savedName = localStorage.getItem('diabuddy-display-name') || 'Demo Patient';
-    const savedBirthDate = localStorage.getItem('diabuddy-birth-date') || '';
-    const savedPhone = localStorage.getItem('diabuddy-phone') || '';
-    const savedEmergencyContact = localStorage.getItem('diabuddy-emergency-contact') || '';
+    const savedName = localStorage.getItem('nexdoz-display-name') || 'Demo Patient';
+    const savedBirthDate = localStorage.getItem('nexdoz-birth-date') || '';
+    const savedPhone = localStorage.getItem('nexdoz-phone') || '';
+    const savedEmergencyContact = localStorage.getItem('nexdoz-emergency-contact') || '';
     const savedUiEffects = localStorage.getItem(UI_EFFECTS_STORAGE_KEY);
     setAvatarUrl(savedAvatar);
     setName(savedName);
@@ -63,10 +63,10 @@ export default function SettingsPage() {
   }
 
   function saveName() {
-    localStorage.setItem('diabuddy-display-name', name.trim() || 'Demo Patient');
-    localStorage.setItem('diabuddy-birth-date', birthDate);
-    localStorage.setItem('diabuddy-phone', phone);
-    localStorage.setItem('diabuddy-emergency-contact', emergencyContact);
+    localStorage.setItem('nexdoz-display-name', name.trim() || 'Demo Patient');
+    localStorage.setItem('nexdoz-birth-date', birthDate);
+    localStorage.setItem('nexdoz-phone', phone);
+    localStorage.setItem('nexdoz-emergency-contact', emergencyContact);
     localStorage.setItem(UI_EFFECTS_STORAGE_KEY, uiEffectsEnabled ? 'on' : 'off');
     document.documentElement.setAttribute('data-ui-effects', uiEffectsEnabled ? 'on' : 'off');
     window.dispatchEvent(new Event(UI_EFFECTS_EVENT));

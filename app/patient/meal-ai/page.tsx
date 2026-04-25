@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef, useState } from 'react';
-import { Button, Input, Select, TextArea } from '@next-trace/diabuddy-design-system/react';
+import { Button, Input, Select, TextArea } from '@next-trace/nexdoz-design-system/react';
 import { healthApi } from '../../../lib/health-api';
 import { csrfHeaders } from '../../../lib/csrf';
 import { Icon } from '../../components/icons';

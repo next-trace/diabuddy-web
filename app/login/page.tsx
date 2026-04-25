@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { ApiClientError } from '@/api-client';
-import { Button, Input } from '@next-trace/diabuddy-design-system/react';
+import { Button, Input } from '@next-trace/nexdoz-design-system/react';
 import { userApi } from '../../lib/api';
 import { Icon } from '../components/icons';
 
@@ -39,11 +39,11 @@ export default function LoginPage() {
       <section className="card narrow">
         <p className="eyebrow eyebrowWithIcon"><Icon name="shield" /> SECURE ACCESS</p>
         <h1><Icon name="login" /> Sign In</h1>
-        <p className="muted">Sign in with an existing DiaBuddy account.</p>
+        <p className="muted">Sign in with an existing Nexdoz account.</p>
         <form onSubmit={submit} className="formGrid">
           <label>
             Email
-            <Input value={email} onChange={(e) => setEmail(e.target.value)} type="email" placeholder="you@diabuddy.local" />
+            <Input value={email} onChange={(e) => setEmail(e.target.value)} type="email" placeholder="you@nexdoz.local" />
           </label>
           <label>
             Password

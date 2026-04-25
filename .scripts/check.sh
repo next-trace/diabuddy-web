@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Local pre-commit verification for diabuddy-web.
+# Local pre-commit verification for nexdoz-web.
 # Mirrors CI: install, typecheck, build.
 # Playwright E2E tests are run separately in CI with a mock backend.
 

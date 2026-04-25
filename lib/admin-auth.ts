@@ -23,7 +23,7 @@ export function readRoleFromAccessToken(req: NextRequest): string {
 
   try {
     const parsed = JSON.parse(decoded) as Record<string, unknown>;
-    const roleValue = parsed.role || parsed['https://diabuddy.local/role'] || parsed.user_role;
+    const roleValue = parsed.role || parsed['https://nexdoz.local/role'] || parsed.user_role;
     return typeof roleValue === 'string' ? roleValue.toLowerCase() : '';
   } catch {
     return '';
