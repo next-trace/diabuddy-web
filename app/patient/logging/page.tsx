@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Button } from '@next-trace/diabuddy-design-system/react';
+import { Button } from '@next-trace/nexdoz-design-system/react';
 import { healthApi } from '../../../lib/health-api';
 import { Icon } from '../../components/icons';
 

@@ -3,7 +3,7 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-# git is needed because a dependency is resolved from github:next-trace/diabuddy-design-system
+# git is needed because a dependency is resolved from github:next-trace/nexdoz-design-system
 RUN apk add --no-cache git \
   && corepack enable \
   && corepack prepare pnpm@10.33.0 --activate

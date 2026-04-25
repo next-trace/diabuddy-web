@@ -10,11 +10,11 @@ import { LanguageSwitcher } from './language-switcher';
 import { useLanguage } from './language';
 import { csrfHeaders } from '../../lib/csrf';
 
-const AVATAR_STORAGE_KEY = 'diabuddy-avatar-dataurl';
-const AVATAR_EVENT = 'diabuddy-avatar-updated';
-const DISPLAY_NAME_STORAGE_KEY = 'diabuddy-display-name';
-const UI_EFFECTS_STORAGE_KEY = 'diabuddy-ui-effects';
-const UI_EFFECTS_EVENT = 'diabuddy-ui-effects-updated';
+const AVATAR_STORAGE_KEY = 'nexdoz-avatar-dataurl';
+const AVATAR_EVENT = 'nexdoz-avatar-updated';
+const DISPLAY_NAME_STORAGE_KEY = 'nexdoz-display-name';
+const UI_EFFECTS_STORAGE_KEY = 'nexdoz-ui-effects';
+const UI_EFFECTS_EVENT = 'nexdoz-ui-effects-updated';
 
 const navItems = [
   { href: '/', labelKey: 'nav.home', icon: 'home' as const },

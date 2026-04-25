@@ -5,7 +5,7 @@ export function BrandLockup() {
         <img src="/brand-icon-v2.svg?v=20260422c" alt="" className="brandMiniLogo" />
       </span>
       <span className="brandType">
-        <strong>DiaBuddy</strong>
+        <strong>Nexdoz</strong>
         <small>Platform</small>
       </span>
     </div>

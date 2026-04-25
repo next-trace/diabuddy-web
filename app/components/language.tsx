@@ -4,7 +4,7 @@ import { createContext, useContext, useEffect, useMemo, useState, type ReactNode
 
 export type Lang = 'en' | 'de';
 
-const STORAGE_KEY = 'diabuddy-lang';
+const STORAGE_KEY = 'nexdoz-lang';
 
 type Dict = Record<string, string>;
 
@@ -13,11 +13,11 @@ const en: Dict = {
   'lang.en': 'English',
   'lang.de': 'German',
   'shell.platform': 'DIA BUDDY PLATFORM',
-  'shell.title': 'DiaBuddy Operations Center',
+  'shell.title': 'Nexdoz Operations Center',
   'shell.account': 'Account',
   'shell.signed_in_user': 'Signed in user',
   'shell.sign_out': 'Sign out',
-  'shell.about': 'About DiaBuddy',
+  'shell.about': 'About Nexdoz',
   'shell.brand_principles': 'Brand principles',
   'shell.design_strategy': 'Design strategy',
   'nav.home': 'Home',
@@ -40,7 +40,7 @@ const en: Dict = {
   'home.open_dashboard': 'Open Dashboard',
   'home.meal_ai': 'Meal AI',
   'home.mobile_title': 'Get the Mobile App',
-  'home.mobile_body': 'Install DiaBuddy on your phone and sync your diabetes workflow across devices.',
+  'home.mobile_body': 'Install Nexdoz on your phone and sync your diabetes workflow across devices.',
   'home.what_title': 'What You Can Do'
 };
 
@@ -49,11 +49,11 @@ const de: Dict = {
   'lang.en': 'Englisch',
   'lang.de': 'Deutsch',
   'shell.platform': 'DIA BUDDY PLATTFORM',
-  'shell.title': 'DiaBuddy Leitstand',
+  'shell.title': 'Nexdoz Leitstand',
   'shell.account': 'Konto',
   'shell.signed_in_user': 'Angemeldeter Nutzer',
   'shell.sign_out': 'Abmelden',
-  'shell.about': 'Über DiaBuddy',
+  'shell.about': 'Über Nexdoz',
   'shell.brand_principles': 'Markenprinzipien',
   'shell.design_strategy': 'Designstrategie',
   'nav.home': 'Start',
@@ -76,7 +76,7 @@ const de: Dict = {
   'home.open_dashboard': 'Dashboard öffnen',
   'home.meal_ai': 'Mahlzeit-KI',
   'home.mobile_title': 'Mobile App holen',
-  'home.mobile_body': 'Installiere DiaBuddy auf deinem Telefon und synchronisiere den Diabetes-Workflow über alle Geräte.',
+  'home.mobile_body': 'Installiere Nexdoz auf deinem Telefon und synchronisiere den Diabetes-Workflow über alle Geräte.',
   'home.what_title': 'Was Du tun kannst'
 };
 
