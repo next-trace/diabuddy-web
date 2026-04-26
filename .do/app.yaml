@@ -1,0 +1,81 @@
+# DigitalOcean App Platform spec for nexdoz-web (production).
+#
+# Apply with:
+#   doctl apps create --spec .do/app.yaml
+# or update with:
+#   doctl apps update <app-id> --spec .do/app.yaml
+#
+# Image source: GHCR (built + pushed by .github/workflows/publish-image.yml on
+# tag push). Deploy trigger lives in .github/workflows/deploy-do.yml.
+
+name: nexdoz-web
+region: fra
+
+services:
+  - name: web
+    image:
+      registry_type: GHCR
+      registry: next-trace
+      repository: nexdoz-web
+      tag: latest
+    instance_size_slug: basic-xs   # $12/mo — Next.js needs more headroom than the BE
+    instance_count: 1
+    http_port: 3000
+    health_check:
+      http_path: /api/health
+      initial_delay_seconds: 15
+      period_seconds: 10
+      timeout_seconds: 5
+      success_threshold: 1
+      failure_threshold: 5
+    routes:
+      - path: /
+    envs:
+      - key: PORT
+        scope: RUN_AND_BUILD_TIME
+        value: "3000"
+      - key: NODE_ENV
+        scope: RUN_AND_BUILD_TIME
+        value: "production"
+      - key: APP_ENV
+        scope: RUN_AND_BUILD_TIME
+        value: "prod"
+
+      # Public URLs — exposed to the browser. Safe to commit.
+      - key: NEXT_PUBLIC_BASE_URL
+        scope: RUN_AND_BUILD_TIME
+        value: "https://app.nexdoz.com"
+      - key: NEXT_PUBLIC_CDN_URL
+        scope: RUN_AND_BUILD_TIME
+        value: "https://cdn.nexdoz.com"
+
+      # Server-only — never NEXT_PUBLIC_*.
+      - key: BACKEND_URL
+        scope: RUN_TIME
+        value: "https://api.nexdoz.com"
+      - key: CSRF_SECRET
+        scope: RUN_TIME
+        type: SECRET
+      - key: SESSION_COOKIE_SECRET
+        scope: RUN_TIME
+        type: SECRET
+
+      # Observability.
+      - key: BETTERSTACK_TOKEN
+        scope: RUN_TIME
+        type: SECRET
+
+      # Analytics (privacy-first; NO Google Analytics on patient pages).
+      - key: NEXT_PUBLIC_PLAUSIBLE_DOMAIN
+        scope: RUN_AND_BUILD_TIME
+        value: "app.nexdoz.com"
+
+domains:
+  - domain: app.nexdoz.com
+    type: PRIMARY
+    zone: nexdoz.com
+  - domain: nexdoz.com
+    type: ALIAS
+    zone: nexdoz.com
+    # nexdoz.com 301-redirects to app.nexdoz.com via Cloudflare page rule
+    # (configured separately; not in App Platform).

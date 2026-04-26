@@ -1,16 +1,18 @@
 import { defineConfig, devices } from '@playwright/test';
 
+// Test web-server: production mode (next build && next start) to avoid the
+// dev-mode on-demand compile penalty that landed with the Next 16 + React 19
+// upgrade. Dev-mode cold-start went from ~5s/route on Next 15 to ~15-20s/route
+// on Next 16, blowing past the 60s test timeout for any test that navigates
+// after login. Building once + running production server is faster end-to-end
+// AND deterministic.
 export default defineConfig({
   testDir: './e2e',
-  // 60s / 15s — Next.js dev cold-start takes 5-10s for first route compile
-  // on a GitHub Actions runner; the old 30s/5s budget was under that floor.
-  timeout: 60_000,
+  timeout: 90_000,
   expect: {
-    timeout: 15_000
+    timeout: 20_000
   },
   fullyParallel: true,
-  // One retry absorbs the occasional dev-server compile stall; CI is again
-  // blocking (continue-on-error removed from the workflow).
   retries: 1,
   reporter: 'list',
   use: {
@@ -25,10 +27,14 @@ export default defineConfig({
       timeout: 120_000
     },
     {
-      command: 'USER_API_BASE_URL=http://127.0.0.1:18080 pnpm exec next dev -p 3001',
+      // build → start. CI cost: +30-60s for the build, then every test
+      // runs against pre-compiled routes. No more dev-mode compile timeouts.
+      command:
+        'USER_API_BASE_URL=http://127.0.0.1:18080 pnpm exec next build && ' +
+        'USER_API_BASE_URL=http://127.0.0.1:18080 pnpm exec next start -p 3001',
       url: 'http://127.0.0.1:3001',
       reuseExistingServer: true,
-      timeout: 120_000
+      timeout: 300_000
     }
   ],
   projects: [
