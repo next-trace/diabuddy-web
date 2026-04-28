@@ -1,10 +1,11 @@
 'use client';
 
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
+import { StorageKeys } from '../../lib/storage-keys';
 
 export type Lang = 'en' | 'de';
 
-const STORAGE_KEY = 'nexdoz-lang';
+const STORAGE_KEY = StorageKeys.LANG;
 
 type Dict = Record<string, string>;
 

@@ -1,4 +1,14 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, type Page } from '@playwright/test';
+
+async function mockAuthMe(page: Page, email: string) {
+  await page.route('**/api/auth/me', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({ id: 'u1', email, role: 'patient' })
+    });
+  });
+}
 
 test('redirects anonymous users from dashboard to login', async ({ page }) => {
   await page.goto('/dashboard');
@@ -7,6 +17,8 @@ test('redirects anonymous users from dashboard to login', async ({ page }) => {
 });
 
 test('logs in through api route and lands on dashboard', async ({ page }) => {
+  await mockAuthMe(page, 'john@example.com');
+
   await page.route('**/api/auth/login', async (route) => {
     await route.fulfill({
       status: 200,
@@ -28,6 +40,7 @@ test('logs in through api route and lands on dashboard', async ({ page }) => {
 });
 
 test('logs out and returns to login', async ({ context, page }) => {
+  await mockAuthMe(page, 'jane@example.com');
   await context.addCookies([
     {
       name: 'db_session',

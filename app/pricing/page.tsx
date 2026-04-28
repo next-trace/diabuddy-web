@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
 import { Icon } from '../components/icons';
+import { PageHeader, Tabs, Button } from '@next-trace/nexdoz-design-system/react';
 
 type Billing = 'monthly' | 'yearly';
 type PlanKey = 'core' | 'plus' | 'clinician' | 'enterprise';
@@ -128,25 +129,32 @@ export default function PricingPage() {
   }, [billing]);
 
   return (
-    <section className="shell">
-      <section className="hero">
-        <p className="eyebrow eyebrowWithIcon"><Icon name="pricing" /> COMMERCIAL MODEL</p>
-        <h1>Subscription Plans</h1>
-        <p className="lead">
-          Built for consumer, clinician, and enterprise growth with clear upgrade paths and recurring revenue. No free plan,
-          only a time-boxed trial to protect conversion quality.
-        </p>
-        <div className="tabs">
-          <button className={`tab ${billing === 'monthly' ? 'active' : ''}`} onClick={() => setBilling('monthly')}>Monthly</button>
-          <button className={`tab ${billing === 'yearly' ? 'active' : ''}`} onClick={() => setBilling('yearly')}>Yearly</button>
-        </div>
-        <p className="muted">{discountText}.</p>
-        <p className="muted">Localized checkout: USD in the US, EUR in Eurozone (VAT included where required).</p>
-        <div className="ctaRow">
-          <Link className="linkButton secondary" href="/market"><Icon name="market" /> View Market Scan</Link>
-          <Link className="linkButton" href="/dashboard"><Icon name="dashboard" /> Open Product</Link>
-        </div>
-      </section>
+    <section className="shell" data-theme="dbui-light">
+      <PageHeader
+        icon={<Icon name="pricing" />}
+        eyebrow={<><Icon name="pricing" /> Commercial Model</>}
+        title="Subscription Plans"
+        subtitle="Built for consumer, clinician, and enterprise growth with clear upgrade paths and recurring revenue. No free plan, only a time-boxed trial to protect conversion quality."
+        actions={
+          <>
+            <Link href="/market"><Button variant="secondary" size="md"><Icon name="market" /> View Market Scan</Button></Link>
+            <Link href="/dashboard"><Button variant="primary" size="md"><Icon name="dashboard" /> Open Product</Button></Link>
+          </>
+        }
+      />
+
+      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem' }}>
+        <Tabs
+          ariaLabel="Billing period"
+          value={billing}
+          onChange={(id) => setBilling(id as Billing)}
+          items={[
+            { id: 'monthly', label: 'Monthly' },
+            { id: 'yearly',  label: 'Yearly' },
+          ]}
+        />
+        <p className="dbui-muted" style={{ margin: 0 }}>{discountText}. Localized checkout: USD in the US, EUR in Eurozone (VAT included where required).</p>
+      </div>
 
       <section className="cards pricingGrid">
         {plans.map((plan) => {

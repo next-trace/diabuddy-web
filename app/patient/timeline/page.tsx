@@ -3,6 +3,8 @@
 import { useEffect, useState } from 'react';
 import { healthApi, type HealthEventView } from '../../../lib/health-api';
 import { Icon } from '../../components/icons';
+import { Button, PageHeader, Card, CardHeader, CardBody, EmptyState } from '@next-trace/nexdoz-design-system/react';
+import { mapErrorToFriendly } from '../../../lib/error-map';
 
 export default function TimelinePage() {
   const [events, setEvents] = useState<HealthEventView[]>([]);
@@ -15,7 +17,7 @@ export default function TimelinePage() {
     try {
       setEvents(await healthApi.listEventsView({ limit: 200 }));
     } catch (e) {
-      setError((e as Error).message);
+      setError(mapErrorToFriendly(e));
     }
   }
 
@@ -27,7 +29,7 @@ export default function TimelinePage() {
       await load();
       setMessage('Event deleted.');
     } catch (e) {
-      setError((e as Error).message);
+      setError(mapErrorToFriendly(e));
     }
   }
 
@@ -36,33 +38,43 @@ export default function TimelinePage() {
   }, []);
 
   return (
-    <section className="shell">
-      <section className="hero">
-        <p className="eyebrow eyebrowWithIcon"><Icon name="timeline" /> PATIENT WORKFLOW</p>
-        <h1>Timeline</h1>
-        <p className="lead">Unified timeline of all health events.</p>
-      </section>
+    <section className="shell" data-theme="dbui-light">
+      <PageHeader
+        icon={<Icon name="timeline" />}
+        eyebrow={<><Icon name="timeline" /> Patient Workflow</>}
+        title="Timeline"
+        subtitle="Unified timeline of all health events."
+        actions={<Button variant="ghost" size="md" onClick={load}>Refresh</Button>}
+      />
 
-      <section className="card">
-        <div className="ctaRow">
-          <button className="linkButton" onClick={load}>Refresh</button>
-        </div>
-        <div className="stack">
-          {events.length ? events.map((e) => (
-            <div key={e.id} className="timelineItem">
-              <div>
-                <p><strong>{String(e.kind).toUpperCase()}</strong> | {new Date(e.timestamp).toLocaleString()}</p>
-                <p>{e.primary_text}</p>
-                {e.note ? <p className="muted">{e.note}</p> : null}
-              </div>
-              <button className="linkButton danger tiny" onClick={() => removeEvent(e.id)}>Delete</button>
+      <Card>
+        <CardHeader title="Events" />
+        <CardBody>
+          {events.length ? (
+            <div className="stack">
+              {events.map((e) => (
+                <div key={e.id} className="timelineItem">
+                  <div>
+                    <p><strong>{String(e.kind).toUpperCase()}</strong> | {new Date(e.timestamp).toLocaleString()}</p>
+                    <p>{e.primary_text}</p>
+                    {e.note ? <p className="dbui-muted">{e.note}</p> : null}
+                  </div>
+                  <Button variant="danger" size="sm" onClick={() => removeEvent(e.id)}>Delete</Button>
+                </div>
+              ))}
             </div>
-          )) : <p className="muted">No events logged yet.</p>}
-        </div>
-      </section>
+          ) : (
+            <EmptyState
+              icon={<Icon name="timeline" />}
+              title="No events logged yet"
+              hint="Start logging glucose, meals, medications, or activity from the Logging page to see a unified timeline here."
+            />
+          )}
+        </CardBody>
+      </Card>
 
-      {message ? <p className="okText">{message}</p> : null}
-      {error ? <p className="errorText">{error}</p> : null}
+      {message ? <p style={{ color: 'var(--dbui-success)', marginTop: '1rem' }}>{message}</p> : null}
+      {error ? <p style={{ color: 'var(--dbui-danger)', marginTop: '1rem' }}>{error}</p> : null}
     </section>
   );
 }

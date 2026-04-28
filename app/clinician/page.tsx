@@ -3,6 +3,8 @@
 import { useEffect, useState } from 'react';
 import { healthApi, type Recommendation } from '../../lib/health-api';
 import { Icon } from '../components/icons';
+import { Button, PageHeader, Card, CardHeader, CardBody, EmptyState } from '@next-trace/nexdoz-design-system/react';
+import { mapErrorToFriendly } from '../../lib/error-map';
 
 export default function ClinicianPage() {
   const [summary, setSummary] = useState('');
@@ -18,7 +20,7 @@ export default function ClinicianPage() {
       setSummary(view.summary);
       setRecs(view.escalations);
     } catch (e) {
-      setError((e as Error).message);
+      setError(mapErrorToFriendly(e));
     }
   }
 
@@ -38,38 +40,54 @@ export default function ClinicianPage() {
   }, []);
 
   return (
-    <section className="shell">
-      <section className="hero">
-        <p className="eyebrow eyebrowWithIcon"><Icon name="stethoscope" /> CLINICIAN WORKFLOW</p>
-        <h1>Clinician Summary</h1>
-        <p className="lead">Visit-ready summary and escalation signals.</p>
-      </section>
+    <section className="shell" data-theme="dbui-light">
+      <PageHeader
+        icon={<Icon name="stethoscope" />}
+        eyebrow={<><Icon name="stethoscope" /> Clinician Workflow</>}
+        title="Clinician Summary"
+        subtitle="Visit-ready summary and escalation signals."
+        actions={
+          <>
+            <Button variant="ghost"     size="md" onClick={load}>Refresh</Button>
+            <Button variant="secondary" size="md" onClick={copySummary}>Copy</Button>
+          </>
+        }
+      />
 
-      <section className="cards twoCol">
-        <article className="card">
-          <div className="ctaRow">
-            <button className="linkButton" onClick={load}>Refresh</button>
-            <button className="linkButton secondary" onClick={copySummary}>Copy</button>
-          </div>
-          <textarea className="summaryBox" value={summary} readOnly />
-        </article>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))', gap: '1rem' }}>
+        <Card>
+          <CardHeader title="Visit summary" />
+          <CardBody>
+            <textarea className="summaryBox" value={summary} readOnly />
+          </CardBody>
+        </Card>
 
-        <article className="card">
-          <h3>Safety Escalations</h3>
-          <div className="stack">
-            {recs.length ? recs.map((r) => (
-              <div key={r.id} className="rec escalate">
-                <p><strong>{r.title}</strong></p>
-                <p className="muted">{r.why}</p>
-                <p className="safety"><strong>Action:</strong> {r.safety}</p>
+        <Card>
+          <CardHeader title="Safety Escalations" />
+          <CardBody>
+            {recs.length ? (
+              <div className="stack">
+                {recs.map((r) => (
+                  <div key={r.id} className="rec escalate">
+                    <p><strong>{r.title}</strong></p>
+                    <p className="dbui-muted">{r.why}</p>
+                    <p className="safety"><strong>Action:</strong> {r.safety}</p>
+                  </div>
+                ))}
               </div>
-            )) : <p className="okText">No active escalations.</p>}
-          </div>
-        </article>
-      </section>
+            ) : (
+              <EmptyState
+                icon={<Icon name="shield" />}
+                title="No active escalations"
+                hint="When a patient triggers a safety threshold, escalations show up here for clinician review."
+              />
+            )}
+          </CardBody>
+        </Card>
+      </div>
 
-      {message ? <p className="okText">{message}</p> : null}
-      {error ? <p className="errorText">{error}</p> : null}
+      {message ? <p style={{ color: 'var(--dbui-success)', marginTop: '1rem' }}>{message}</p> : null}
+      {error ? <p style={{ color: 'var(--dbui-danger)', marginTop: '1rem' }}>{error}</p> : null}
     </section>
   );
 }

@@ -1,7 +1,7 @@
 const http = require('http');
 
 const host = '127.0.0.1';
-const port = 18080;
+const port = 18099;
 
 function sendJson(res, status, payload) {
   res.writeHead(status, { 'content-type': 'application/json' });

@@ -22,7 +22,7 @@ export default defineConfig({
   webServer: [
     {
       command: 'node ./e2e/mock-backend.cjs',
-      url: 'http://127.0.0.1:18080/healthz',
+      url: 'http://127.0.0.1:18099/healthz',
       reuseExistingServer: true,
       timeout: 120_000
     },
@@ -30,8 +30,8 @@ export default defineConfig({
       // build → start. CI cost: +30-60s for the build, then every test
       // runs against pre-compiled routes. No more dev-mode compile timeouts.
       command:
-        'USER_API_BASE_URL=http://127.0.0.1:18080 pnpm exec next build && ' +
-        'USER_API_BASE_URL=http://127.0.0.1:18080 pnpm exec next start -p 3001',
+        'USER_API_BASE_URL=http://127.0.0.1:18099 pnpm exec next build && ' +
+        'USER_API_BASE_URL=http://127.0.0.1:18099 pnpm exec next start -p 3001',
       url: 'http://127.0.0.1:3001',
       reuseExistingServer: true,
       timeout: 300_000

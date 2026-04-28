@@ -1,37 +1,33 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { StorageKeys } from '../../lib/storage-keys';
 
-type ThemeId = 'core' | 'night';
-
-const STORAGE_KEY = 'nexdoz-theme';
+type ThemeId = 'dbui-light' | 'dbui-dark';
 
 export function ThemeSwitcher() {
-  const [theme, setTheme] = useState<ThemeId>('core');
+  const [theme, setTheme] = useState<ThemeId>('dbui-light');
 
   useEffect(() => {
-    const saved = localStorage.getItem(STORAGE_KEY) as ThemeId | null;
-    if (saved !== 'core' && saved !== 'night') {
-      document.documentElement.setAttribute('data-theme', 'core');
-      return;
-    }
-    setTheme(saved);
-    document.documentElement.setAttribute('data-theme', saved);
+    const saved = localStorage.getItem(StorageKeys.THEME) as ThemeId | null;
+    const next: ThemeId = saved === 'dbui-dark' ? 'dbui-dark' : 'dbui-light';
+    setTheme(next);
+    document.documentElement.setAttribute('data-theme', next);
   }, []);
 
   function applyTheme(next: ThemeId) {
     setTheme(next);
-    localStorage.setItem(STORAGE_KEY, next);
+    localStorage.setItem(StorageKeys.THEME, next);
     document.documentElement.setAttribute('data-theme', next);
   }
 
-  const isDark = theme === 'night';
+  const isDark = theme === 'dbui-dark';
 
   return (
     <button
       type="button"
       className="themeToggle"
-      onClick={() => applyTheme(isDark ? 'core' : 'night')}
+      onClick={() => applyTheme(isDark ? 'dbui-light' : 'dbui-dark')}
       aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
       title={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
     >

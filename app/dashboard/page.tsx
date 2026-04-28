@@ -6,6 +6,14 @@ import { userApi } from '../../lib/api';
 import { healthApi, type ActionPlan, type CreateHealthEventPayload, type DashboardView, type EventKind, type HealthEventView, type Recommendation } from '../../lib/health-api';
 import { csrfHeaders } from '../../lib/csrf';
 import { Icon } from '../components/icons';
+import {
+  PageHeader,
+  MetricTile,
+  Tabs,
+  EmptyState,
+  Button,
+} from '@next-trace/nexdoz-design-system/react';
+import '@next-trace/nexdoz-design-system/styles.css';
 
 type TabId = 'cockpit' | 'logging' | 'timeline' | 'clinician' | 'users';
 type PeriodKey = 'daily' | 'weekly' | 'monthly' | 'quarterly' | 'yearly' | 'custom';
@@ -332,38 +340,55 @@ export default function DashboardPage() {
   const outcomes = dashboardView?.outcomes;
 
   return (
-    <section className="shell">
-      <section className="hero">
-        <p className="eyebrow eyebrowWithIcon"><Icon name="dashboard" /> DASHBOARD</p>
-        <h1>Diabetes Decision Cockpit</h1>
-        <p className="lead">
-          Real-time event analytics, safety checks, clinician summary, and user operations connected to live stored health data.
-        </p>
-        <div className="kpiRow">
-          <div className="kpi"><span>Events</span><strong>{outcomes?.event_count ?? 0}</strong></div>
-          <div className="kpi"><span>Avg Glucose</span><strong>{outcomes?.avg_glucose || 'n/a'} mg/dL</strong></div>
-          <div className="kpi"><span>Time In Range</span><strong>{outcomes?.in_range_pct ?? 0}%</strong></div>
-          <div className="kpi"><span>Medication Adherence</span><strong>{outcomes?.adherence_pct ?? 0}%</strong></div>
-          <div className="kpi"><span>Escalations</span><strong>{outcomes?.escalation_count ?? 0}</strong></div>
-        </div>
-        <div className="rangeMeta">
-          Showing: <strong>{rangeStartText}</strong> to <strong>{rangeEndText}</strong>
-        </div>
-        <div className="ctaRow">
-          <button className="linkButton secondary" onClick={() => setActiveTab('logging')}>Log Event</button>
-          <button className="linkButton secondary" onClick={() => setActiveTab('clinician')}>Clinician View</button>
-          <button className="linkButton" onClick={refreshHealthData}>Refresh</button>
-          <button className="linkButton" onClick={clearHealthData}>Clear Events</button>
-        </div>
-      </section>
+    <section className="shell" data-theme="dbui-light">
+      <PageHeader
+        icon={<Icon name="dashboard" />}
+        eyebrow={<><Icon name="dashboard" /> Dashboard</>}
+        title="Diabetes Decision Cockpit"
+        subtitle="Real-time event analytics, safety checks, clinician summary, and user operations connected to live stored health data."
+        actions={
+          <>
+            <Button variant="secondary" size="md" onClick={() => setActiveTab('logging')}>Log Event</Button>
+            <Button variant="secondary" size="md" onClick={() => setActiveTab('clinician')}>Clinician View</Button>
+            <Button variant="ghost"     size="md" onClick={refreshHealthData}>Refresh</Button>
+            <Button variant="danger"    size="md" onClick={clearHealthData}>Clear Events</Button>
+          </>
+        }
+      />
 
-      <section className="tabs">
-        <button className={`tab ${activeTab === 'cockpit' ? 'active' : ''}`} onClick={() => setActiveTab('cockpit')}>Cockpit</button>
-        <button className={`tab ${activeTab === 'logging' ? 'active' : ''}`} onClick={() => setActiveTab('logging')}>Logging</button>
-        <button className={`tab ${activeTab === 'timeline' ? 'active' : ''}`} onClick={() => setActiveTab('timeline')}>Timeline</button>
-        <button className={`tab ${activeTab === 'clinician' ? 'active' : ''}`} onClick={() => setActiveTab('clinician')}>Clinician</button>
-        <button className={`tab ${activeTab === 'users' ? 'active' : ''}`} onClick={() => setActiveTab('users')}>User Ops</button>
-      </section>
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+          gap: '0.75rem',
+          marginBottom: '1.25rem',
+        }}
+      >
+        <MetricTile label="Events"               value={outcomes?.event_count ?? 0} />
+        <MetricTile label="Avg Glucose"          value={`${outcomes?.avg_glucose || 'n/a'} mg/dL`} />
+        <MetricTile label="Time In Range"        value={`${outcomes?.in_range_pct ?? 0}%`} />
+        <MetricTile label="Medication Adherence" value={`${outcomes?.adherence_pct ?? 0}%`} />
+        <MetricTile label="Escalations"          value={outcomes?.escalation_count ?? 0} />
+      </div>
+
+      <p className="dbui-muted" style={{ marginBottom: '1rem' }}>
+        Showing <strong>{rangeStartText}</strong> to <strong>{rangeEndText}</strong>
+      </p>
+
+      <div style={{ marginBottom: '1.25rem' }}>
+        <Tabs
+          ariaLabel="Dashboard sections"
+          value={activeTab}
+          onChange={(id) => setActiveTab(id as TabId)}
+          items={[
+            { id: 'cockpit',   label: 'Cockpit' },
+            { id: 'logging',   label: 'Logging' },
+            { id: 'timeline',  label: 'Timeline' },
+            { id: 'clinician', label: 'Clinician' },
+            { id: 'users',     label: 'User Ops' },
+          ]}
+        />
+      </div>
 
       {activeTab === 'cockpit' ? (
         <section className="cards twoCol">
@@ -417,15 +442,23 @@ export default function DashboardPage() {
 
           <article className="card">
             <h3>AI Recommendations</h3>
-            <div className="stack">
-              {recommendations.map((r) => (
-                <div key={r.id} className={`rec ${r.escalate ? 'escalate' : ''}`}>
-                  <p><strong>{r.title}</strong> <span className="chip">{r.confidence}</span></p>
-                  <p className="muted">{r.why}</p>
-                  <p className="safety"><strong>Safety:</strong> {r.safety}</p>
-                </div>
-              ))}
-            </div>
+            {recommendations.length ? (
+              <div className="stack">
+                {recommendations.map((r) => (
+                  <div key={r.id} className={`rec ${r.escalate ? 'escalate' : ''}`}>
+                    <p><strong>{r.title}</strong> <span className="chip">{r.confidence}</span></p>
+                    <p className="muted">{r.why}</p>
+                    <p className="safety"><strong>Safety:</strong> {r.safety}</p>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <EmptyState
+                icon={<Icon name="spark" />}
+                title="No recommendations yet"
+                hint="Once events are logged for the selected period, the AI will surface explainable suggestions and safety checks here."
+              />
+            )}
           </article>
 
           <article className="card">

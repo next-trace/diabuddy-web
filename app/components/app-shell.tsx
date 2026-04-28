@@ -1,20 +1,23 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
-import { BrandLockup } from './brand';
+import { BrandLockup } from '@next-trace/nexdoz-design-system/react';
 import { Icon } from './icons';
 import { ThemeSwitcher } from './theme-switcher';
 import { LanguageSwitcher } from './language-switcher';
 import { useLanguage } from './language';
 import { csrfHeaders } from '../../lib/csrf';
+import { StorageKeys, StorageEvents, migrateLegacyKeys } from '../../lib/storage-keys';
 
-const AVATAR_STORAGE_KEY = 'nexdoz-avatar-dataurl';
-const AVATAR_EVENT = 'nexdoz-avatar-updated';
-const DISPLAY_NAME_STORAGE_KEY = 'nexdoz-display-name';
-const UI_EFFECTS_STORAGE_KEY = 'nexdoz-ui-effects';
-const UI_EFFECTS_EVENT = 'nexdoz-ui-effects-updated';
+// Routes that don't require an authenticated session. AppShell skips the
+// 401-redirect for these. Middleware also has its own public allow-list.
+const PUBLIC_ROUTES = ['/', '/login', '/pricing', '/market'];
+function isPublicRoute(pathname: string): boolean {
+  if (pathname === '/' || pathname.startsWith('/login')) return true;
+  return PUBLIC_ROUTES.some((p) => pathname === p || pathname.startsWith(`${p}/`));
+}
 
 const navItems = [
   { href: '/', labelKey: 'nav.home', icon: 'home' as const },
@@ -46,6 +49,7 @@ function displayNameFromEmail(email: string, fallback: string): string {
 
 export function AppShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
+  const router = useRouter();
   const { t } = useLanguage();
   const [menuOpen, setMenuOpen] = useState(false);
   const [navCollapsed, setNavCollapsed] = useState(false);
@@ -62,11 +66,27 @@ export function AppShell({ children }: { children: ReactNode }) {
   }, [pathname]);
 
   useEffect(() => {
+    // One-shot copy of pre-rename diabuddy-* keys to nexdoz-*.
+    migrateLegacyKeys();
+  }, []);
+
+  useEffect(() => {
     let mounted = true;
     void (async () => {
       try {
         const res = await fetch('/api/auth/me', { cache: 'no-store' });
-        if (!res.ok) return;
+        if (!res.ok) {
+          // B6: do NOT silently fall back to a fake user on a protected page.
+          // Public pages keep rendering anonymously.
+          if (mounted) {
+            setUserEmail('');
+            setUserRole('');
+            if (!isPublicRoute(pathname)) {
+              router.replace('/login');
+            }
+          }
+          return;
+        }
         const payload = await res.json();
         const email = typeof payload?.email === 'string'
           ? payload.email
@@ -83,28 +103,30 @@ export function AppShell({ children }: { children: ReactNode }) {
         if (mounted) setUserEmail(email);
         if (mounted) setUserRole(role.toLowerCase());
       } catch {
-        if (mounted) setUserEmail('');
-        if (mounted) setUserRole('');
+        if (mounted) {
+          setUserEmail('');
+          setUserRole('');
+        }
       }
     })();
     return () => {
       mounted = false;
     };
-  }, []);
+  }, [pathname, router]);
 
   useEffect(() => {
     const readAvatar = () => {
       if (typeof window === 'undefined') return;
-      setAvatarUrl(localStorage.getItem(AVATAR_STORAGE_KEY) || '');
-      setDisplayNameOverride(localStorage.getItem(DISPLAY_NAME_STORAGE_KEY) || 'Demo Patient');
+      setAvatarUrl(localStorage.getItem(StorageKeys.AVATAR) || '');
+      setDisplayNameOverride(localStorage.getItem(StorageKeys.DISPLAY_NAME) || '');
     };
 
     readAvatar();
-    window.addEventListener(AVATAR_EVENT, readAvatar);
+    window.addEventListener(StorageEvents.AVATAR, readAvatar);
     window.addEventListener('storage', readAvatar);
 
     return () => {
-      window.removeEventListener(AVATAR_EVENT, readAvatar);
+      window.removeEventListener(StorageEvents.AVATAR, readAvatar);
       window.removeEventListener('storage', readAvatar);
     };
   }, []);
@@ -112,16 +134,16 @@ export function AppShell({ children }: { children: ReactNode }) {
   useEffect(() => {
     const syncUiEffects = () => {
       if (typeof window === 'undefined') return;
-      const saved = localStorage.getItem(UI_EFFECTS_STORAGE_KEY);
+      const saved = localStorage.getItem(StorageKeys.UI_EFFECTS);
       const enabled = saved !== 'off';
       document.documentElement.setAttribute('data-ui-effects', enabled ? 'on' : 'off');
     };
 
     syncUiEffects();
-    window.addEventListener(UI_EFFECTS_EVENT, syncUiEffects);
+    window.addEventListener(StorageEvents.UI_EFFECTS, syncUiEffects);
     window.addEventListener('storage', syncUiEffects);
     return () => {
-      window.removeEventListener(UI_EFFECTS_EVENT, syncUiEffects);
+      window.removeEventListener(StorageEvents.UI_EFFECTS, syncUiEffects);
       window.removeEventListener('storage', syncUiEffects);
     };
   }, []);
@@ -166,12 +188,12 @@ export function AppShell({ children }: { children: ReactNode }) {
     setNavCollapsed((x) => !x);
   }
 
-  const displayName = useMemo(() => displayNameFromEmail(userEmail, 'Demo Patient'), [userEmail]);
+  const displayName = useMemo(() => displayNameFromEmail(userEmail, ''), [userEmail]);
   const finalDisplayName = useMemo(
     () => (displayNameOverride.trim() ? displayNameOverride.trim() : displayName),
     [displayNameOverride, displayName]
   );
-  const avatarLabel = useMemo(() => (finalDisplayName || 'U').slice(0, 1).toUpperCase(), [finalDisplayName]);
+  const avatarLabel = useMemo(() => (finalDisplayName || 'N').slice(0, 1).toUpperCase(), [finalDisplayName]);
   const showStrategyLinks = userRole === 'admin';
 
   if (pathname === '/login' || pathname.startsWith('/login/')) {
