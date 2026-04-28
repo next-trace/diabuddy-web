@@ -1,6 +1,6 @@
 {
   "name": "@next-trace/nexdoz-web",
-  "version": "0.1.0",
+  "version": "0.3.0",
   "private": true,
   "scripts": {
     "dev": "next dev -H 0.0.0.0",
@@ -14,7 +14,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@next-trace/nexdoz-design-system": "github:next-trace/nexdoz-design-system#v0.2.0",
+    "@next-trace/nexdoz-design-system": "github:next-trace/nexdoz-design-system#444954d35a959a1ff53ff46f4dd6427f96009c05",
     "next": "^16.2.4",
     "react": "^19.2.5",
     "react-dom": "^19.2.5"

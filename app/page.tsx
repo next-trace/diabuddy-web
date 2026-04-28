@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { Icon } from './components/icons';
+import { PageHeader, MetricTile, Card, CardHeader, CardBody, Button } from '@next-trace/nexdoz-design-system/react';
 
 const homeCards = [
   {
@@ -21,50 +22,37 @@ const homeCards = [
 
 export default function HomePage() {
   return (
-    <section className="shell">
-      <section className="hero">
-        <p className="eyebrow eyebrowWithIcon"><Icon name="dashboard" /> NEXTTRACE OPERATIONS LAYER</p>
-        <h1>Nexdoz Control Surface</h1>
-        <p className="lead">
-          High-trust diabetes operations with clear action paths, live signals, and clinician-ready summaries.
-        </p>
-        <div className="ctaRow">
-          <Link className="linkButton" href="/dashboard">
-            <Icon name="dashboard" /> Open Dashboard
-          </Link>
-          <Link className="linkButton secondary" href="/patient/meal-ai">
-            <Icon name="meal" /> Try Meal AI
-          </Link>
-          <Link className="linkButton secondary" href="/market">
-            <Icon name="market" /> Market View
-          </Link>
-        </div>
-        <div className="heroStats">
-          <article>
-            <strong>99.2%</strong>
-            <span>Data Integrity</span>
-          </article>
-          <article>
-            <strong>&lt; 2 min</strong>
-            <span>Alert Response Target</span>
-          </article>
-          <article>
-            <strong>24/7</strong>
-            <span>Decision Visibility</span>
-          </article>
-        </div>
-      </section>
+    <section className="shell" data-theme="dbui-light">
+      <PageHeader
+        icon={<Icon name="dashboard" />}
+        eyebrow={<><Icon name="dashboard" /> Nexdoz Operations Layer</>}
+        title="Nexdoz Control Surface"
+        subtitle="High-trust diabetes operations with clear action paths, live signals, and clinician-ready summaries."
+        actions={
+          <>
+            <Link href="/dashboard"><Button variant="primary"   size="md"><Icon name="dashboard" /> Open Dashboard</Button></Link>
+            <Link href="/patient/meal-ai"><Button variant="secondary" size="md"><Icon name="meal" /> Try Meal AI</Button></Link>
+            <Link href="/market"><Button variant="ghost"     size="md"><Icon name="market" /> Market View</Button></Link>
+          </>
+        }
+      />
 
-      <section className="cards">
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '0.75rem', marginBottom: '2rem' }}>
+        <MetricTile label="Data Integrity"          value="99.2%" />
+        <MetricTile label="Alert Response Target"   value="< 2 min" />
+        <MetricTile label="Decision Visibility"     value="24/7" />
+      </div>
+
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1rem' }}>
         {homeCards.map((card) => (
-          <article className="card" key={card.title}>
-            <h3>
-              <Icon name={card.icon} /> {card.title}
-            </h3>
-            <p className="muted">{card.description}</p>
-          </article>
+          <Card key={card.title}>
+            <CardHeader title={<><Icon name={card.icon} /> {card.title}</>} />
+            <CardBody>
+              <p className="dbui-muted">{card.description}</p>
+            </CardBody>
+          </Card>
         ))}
-      </section>
+      </div>
     </section>
   );
 }

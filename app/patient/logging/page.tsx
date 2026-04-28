@@ -1,7 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { Button } from '@next-trace/nexdoz-design-system/react';
+import { Button, PageHeader } from '@next-trace/nexdoz-design-system/react';
+import { mapErrorToFriendly } from '../../../lib/error-map';
 import { healthApi } from '../../../lib/health-api';
 import { Icon } from '../../components/icons';
 
@@ -31,17 +32,18 @@ export default function LoggingPage() {
       await healthApi.createEvent(payload as any);
       setMessage(`${label} saved.`);
     } catch (e) {
-      setError((e as Error).message);
+      setError(mapErrorToFriendly(e));
     }
   }
 
   return (
-    <section className="shell">
-      <section className="hero">
-        <p className="eyebrow eyebrowWithIcon"><Icon name="logging" /> PATIENT WORKFLOW</p>
-        <h1>Event Logging</h1>
-        <p className="lead">Record glucose, meals, medications, activity, sleep, and symptoms.</p>
-      </section>
+    <section className="shell" data-theme="dbui-light">
+      <PageHeader
+        icon={<Icon name="logging" />}
+        eyebrow={<><Icon name="logging" /> Patient Workflow</>}
+        title="Event Logging"
+        subtitle="Record glucose, meals, medications, activity, sleep, and symptoms."
+      />
 
       <section className="card loggingIntro">
         <p className="muted">

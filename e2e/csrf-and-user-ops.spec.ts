@@ -1,6 +1,16 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, type Page } from '@playwright/test';
 
 const baseUrl = 'http://127.0.0.1:3001';
+
+async function mockAuthMe(page: Page, email: string) {
+  await page.route('**/api/auth/me', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({ id: 'u1', email, role: 'patient' })
+    });
+  });
+}
 
 test('rejects logout when csrf token is missing', async ({ request }) => {
   const res = await request.post('/api/auth/logout');
@@ -29,6 +39,7 @@ test('rejects mutating user routes when csrf token is missing', async ({ request
 test('refreshes expired access token and retries protected read', async ({ context, page }) => {
   const userID = 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa';
 
+  await mockAuthMe(page, 'mock@example.com');
   await context.addCookies([
     {
       name: 'db_session',
@@ -61,7 +72,7 @@ test('refreshes expired access token and retries protected read', async ({ conte
   ]);
 
   await page.goto('/dashboard');
-  await page.getByRole('button', { name: 'User Ops' }).click();
+  await page.getByRole('tab', { name: 'User Ops' }).click();
   await page.getByLabel('User ID').fill(userID);
   await page.getByRole('button', { name: 'Get by ID' }).click();
 
@@ -75,6 +86,7 @@ test('authenticated dashboard can create/get/update/hard-delete user', async ({ 
   const createdEmail = 'ui-created@example.com';
   const updatedEmail = 'ui-updated@example.com';
 
+  await mockAuthMe(page, 'mock@example.com');
   await context.addCookies([
     {
       name: 'db_session',
@@ -170,7 +182,7 @@ test('authenticated dashboard can create/get/update/hard-delete user', async ({ 
   });
 
   await page.goto('/dashboard');
-  await page.getByRole('button', { name: 'User Ops' }).click();
+  await page.getByRole('tab', { name: 'User Ops' }).click();
 
   await page.getByLabel('Email').first().fill(createdEmail);
   await page.getByRole('button', { name: 'Create' }).click();
